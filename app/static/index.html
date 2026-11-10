@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manufactura · Control de producción e inventarios</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <!-- Pantalla de acceso -->
+  <main id="pantalla-login" class="oculto">
+    <form id="form-login" class="tarjeta-login" autocomplete="on">
+      <h1>Manufactura</h1>
+      <p class="sub">Control de producción e inventarios</p>
+      <div id="login-error" class="error-form oculto" role="alert"></div>
+      <div class="campo"><label for="l-usuario">Usuario</label><input id="l-usuario" name="usuario" autocomplete="username" required autofocus></div>
+      <div class="campo"><label for="l-clave">Clave</label><input id="l-clave" name="clave" type="password" autocomplete="current-password" required></div>
+      <button class="btn primario" style="width:100%;padding:10px" type="submit">Entrar</button>
+      <p class="nota">Si es tu primera vez, pide tu usuario al administrador. Cada acción que hagas queda registrada en el historial.</p>
+    </form>
+  </main>
+
+  <!-- Aplicación -->
+  <div id="app" class="oculto">
+    <nav id="lateral" aria-label="Módulos">
+      <div class="marca">Manufactura <b>·</b> v2<small>Producción e inventarios</small></div>
+      <div id="menu"></div>
+    </nav>
+    <div id="principal">
+      <header id="barra">
+        <span id="barra-titulo" style="color:var(--suave)"></span>
+        <div class="yo"><span id="yo-texto"></span><button class="btn chico" id="btn-clave" type="button">Cambiar clave</button><button class="btn chico oscuro" id="btn-salir" type="button">Salir</button></div>
+      </header>
+      <main id="contenido"></main>
+    </div>
+  </div>
+
+  <dialog id="modal"></dialog>
+  <div id="avisos" aria-live="polite"></div>
+  <script src="/static/nucleo.js"></script>
+  <script src="/static/vistas.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

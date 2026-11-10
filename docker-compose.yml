@@ -1,0 +1,45 @@
+# Levanta MySQL (y opcionalmente la interfaz web) con un solo comando.
+#   docker compose up -d --wait db      -> solo la base de datos
+#   docker compose up -d --build        -> base de datos + interfaz en http://localhost:5000
+# Si ya tienes un contenedor viejo llamado mysql-manufactura: docker rm -f mysql-manufactura
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-manufactura
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"          # desde tu computador: host 127.0.0.1, puerto 3307
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/sql:ro        # los .sql quedan visibles dentro del contenedor en /sql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    build: ./app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: app_manufactura          # usuario SOLO de procedimientos (lo crea sql/06); ya no usa root
+      DB_PASSWORD: app_manufactura_2026
+      SECRET_KEY: cambia-esta-frase-larga-antes-de-publicar   # firma las sesiones; cámbiala en un servidor real
+      ADMIN_CLAVE_INICIAL: Admin2026!   # clave del usuario "admin" la primera vez (te obliga a cambiarla)
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./tests:/app/tests:ro            # para correr: docker compose exec app python tests/test_api.py
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
